@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+
+# Prisma generated client
+generated/
+
+# Local AI/editor assistant metadata
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
