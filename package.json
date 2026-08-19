@@ -2,6 +2,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "amqplib": "^2.0.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -16,9 +17,11 @@
     "start": "node dist/server.js",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
-    "dev:full": "docker compose up -d && tsx watch src/server.ts"
+    "dev:full": "docker compose up -d && tsx watch src/server.ts",
+    "consumer:orders": "tsx watch src/consumers/order-created.consumer.ts"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.8",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.1.2",

@@ -4,6 +4,9 @@ import { prisma } from "../lib/prisma.js";
 import { createOrderBodySchema } from "../schemas/order.schema.js";
 import { idParamsSchema } from "../schemas/params.schema.js";
 import { AppError } from "../errors/app-error.js";
+import { RabbitMQRoutingKey } from "../events/rabbitmq.events.js";
+import { publishEvent } from "../lib/rabbitmq.js";
+import { randomUUID } from "node:crypto";
 
 export const orderRoutes = Router();
 
@@ -92,6 +95,27 @@ orderRoutes.post("/", async (req, res) => {
     }
 
     return order;
+  });
+
+  await publishEvent({
+    routingKey: RabbitMQRoutingKey.OrderCreated,
+    payload: {
+      eventId: randomUUID(),
+      eventType: RabbitMQRoutingKey.OrderCreated,
+      eventCreatedAt: new Date().toISOString(),
+      data: {
+        orderId: order.id,
+        orderCreatedAt: order.createdAt,
+        total: order.total.toString(),
+        email: order.email,
+        items: order.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice.toString(),
+          subtotal: item.subtotal.toString(),
+        })),
+      },
+    },
   });
 
   return res.status(201).json(order);

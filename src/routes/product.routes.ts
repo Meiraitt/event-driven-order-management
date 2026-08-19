@@ -44,3 +44,15 @@ productRoutes.get("/:id", async (req, res) => {
 
   return res.json(product);
 });
+
+productRoutes.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+
+  await prisma.product.delete({
+    where: {
+      id,
+    },
+  });
+
+  return res.status(204).send();
+});
